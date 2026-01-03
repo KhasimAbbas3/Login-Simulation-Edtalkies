@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Firebase Auth Simulation</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 50px;
+            width: 380px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 50%;
+            display: block;
+            margin: 10px auto;
+}
+
+
+        .message {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <center><h2>Login / Signup</h2></center>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Login</button>
+
+    <div id="message" class="message"></div>
+</div>
+
+<script>
+    function showMessage(msg, type) {
+        const m = document.getElementById("message");
+        m.innerText = msg;
+        m.className = "message " + type;
+    }
+
+    async function signup() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            const res = await fetch("/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+            showMessage(data.message, res.ok ? "success" : "error");
+
+        } catch (err) {
+            console.error(err);
+            showMessage("Backend not reachable", "error");
+        }
+    }
+
+    async function login() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                showMessage("Login successful", "success");
+                console.log("ID Token:", data.idToken);
+            } else {
+                showMessage(data.message, "error");
+            }
+
+        } catch (err) {
+            console.error(err);
+            showMessage("Backend not reachable", "error");
+        }
+    }
+</script>
+
+</body>
+</html>
