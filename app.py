@@ -22,6 +22,10 @@ auth = firebase.auth()
 def home():
     return render_template("index.html")
 
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
 # ---------------- SIGNUP API ----------------
 @app.route("/signup", methods=["POST"])
 def signup():
